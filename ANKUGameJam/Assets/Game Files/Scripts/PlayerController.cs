@@ -80,7 +80,9 @@ public class PlayerController : MonoBehaviour
             if (interactableColliders[0].TryGetComponent<IInteractable>(out IInteractable interactable))
             {
                 GameStateHandler.instance.SetInteractionInfo(interactableColliders[0].transform.position + new Vector3(0, 1f, 0));
-
+                
+                //TODO Eger oyun isInteractable degilse etkileþim paneli açýlmasýn
+                
                 if (Input.GetKeyDown(KeyCode.E))
                 {
                     Debug.Log("Etkileþime girdim");
