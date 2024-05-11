@@ -4,16 +4,11 @@ using UnityEngine;
 
 public class Ballon : MonoBehaviour
 {
-    public MiniGame_ShootingRange range;
-
+    public MiniGame_ShootingRange miniGame_ShootingRange;
     public void OnClick()
     {
-        range.onGunShot?.Invoke();
-        range.onBallonDestroyed?.Invoke();
+        miniGame_ShootingRange.onGunShot?.Invoke();
+        miniGame_ShootingRange.onBallonDestroyed?.Invoke();
         Destroy(gameObject);
-    }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision != null) { Debug.Log(collision.name); }
     }
 }
