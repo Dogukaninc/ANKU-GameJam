@@ -3,6 +3,7 @@ using UnityEngine;
 public class GameStateHandler : MonoBehaviour
 {
     public PlayerController playerController;
+    public GameObject interactionInfo;
 
     public static GameStateHandler instance;
     private void Awake()
@@ -11,7 +12,8 @@ public class GameStateHandler : MonoBehaviour
         {
             instance = this;
         }
-        else {
+        else
+        {
             return;
         }
 
@@ -37,5 +39,11 @@ public class GameStateHandler : MonoBehaviour
     public void ContinueGame()
     {
         playerController.enabled |= true;
+    }
+
+    public void SetInteractionInfo(Vector3 targetPos)
+    {
+        interactionInfo.SetActive(true);
+        interactionInfo.transform.position = targetPos;
     }
 }
