@@ -4,7 +4,7 @@ public class PlayerController : MonoBehaviour
 {
     public LayerMask groundLayer;
     public LayerMask interactables;
-    public GameObject playerRenderer;
+    //public GameObject playerRenderer;
     public Transform groundCheck;
     public Transform interactablePivot;
 
@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public float interactionRadius;
 
     Rigidbody2D rb;
+    public Animator animator;
 
     float horizontal;
 
@@ -34,7 +35,7 @@ public class PlayerController : MonoBehaviour
 
         //Check for interactables, if there is any interact with it with key 'E'
         InteractableChecker();
-
+        CharacterAnimations();
     }
 
     void FixedUpdate()
@@ -78,6 +79,8 @@ public class PlayerController : MonoBehaviour
 
             if (interactableColliders[0].TryGetComponent<IInteractable>(out IInteractable interactable))
             {
+                GameStateHandler.instance.SetInteractionInfo(interactableColliders[0].transform.position + new Vector3(0, 1f, 0));
+
                 if (Input.GetKeyDown(KeyCode.E))
                 {
                     Debug.Log("Etkileþime girdim");
@@ -86,8 +89,22 @@ public class PlayerController : MonoBehaviour
             }
 
         }
+        else
+        {
+            GameStateHandler.instance.interactionInfo.SetActive(false);
+        }
     }
-
+    private void CharacterAnimations()
+    {
+        if (rb.velocity.x > 0 || rb.velocity.x < 0)
+        {
+            animator.SetBool("isWalking", true);
+        }
+        else
+        {
+            animator.SetBool("isWalking", false);
+        }
+    }
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
