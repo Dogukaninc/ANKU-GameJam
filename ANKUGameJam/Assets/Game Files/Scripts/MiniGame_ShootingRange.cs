@@ -1,13 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
 {
     public Texture2D crossHair;
     public bool isInteractable;
+    public TextMeshProUGUI ammoText;
 
     [Header(" Puzzle Settings ")]
     public GameObject miniGamePanel;
@@ -17,15 +18,22 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
     public List<GameObject> tickList = new List<GameObject>();
 
     public int balloonIndex = 0;
+    public int currentAmmoCount;
+    public int maxAmmoCount;
+
 
     public Action onBallonDestroyed;
+    public Action onGunShot;
+
     private void OnEnable()
     {
         onBallonDestroyed += Ticker;
+        onGunShot += ShootGun;
     }
     private void OnDisable()
     {
         onBallonDestroyed -= Ticker;
+        onGunShot -= ShootGun;
     }
 
     void Start()
@@ -40,6 +48,10 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
             ShootingRange();
         }
 
+        MouseClick();
+
+        ammoText.text = currentAmmoCount.ToString() + "/" + maxAmmoCount.ToString();
+
     }
 
     //Mouse týklamasýyla balnolarý vurduðumuz bir mini oyun=>
@@ -48,6 +60,28 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
     {
         tickList[balloonIndex].SetActive(true);
         balloonIndex++;
+    }
+
+    public void ShootGun()
+    {
+        currentAmmoCount--;
+    }
+
+    public void MouseClick()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hitInfo;
+            Debug.Log("Mouse vurduuaaaaaa");
+
+            if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
+            {
+                Debug.Log("Mouse vurduu");
+                GameObject.CreatePrimitive(PrimitiveType.Cube).transform.position = hitInfo.point;
+                Debug.Log(hitInfo.collider.name);
+            }
+        }
     }
 
     public void ShootingRange()
@@ -59,7 +93,6 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
             isGameRunning = false;
             //Oyun bitme aniamsyonu ve durumu
         }
-
     }
 
     public void ChangeCursor()
@@ -75,6 +108,7 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
         Cursor.visible = false;
         miniGamePanel.SetActive(false);
         isInteractable = false;
+        Cursor.SetCursor(default, Vector2.zero, CursorMode.ForceSoftware);//Cursor'u custom set etmeye calistik
         GameStateHandler.instance.ContinueGame();
     }
 

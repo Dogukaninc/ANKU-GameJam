@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MiniGame_Carousel : MonoBehaviour
@@ -13,4 +11,11 @@ public class MiniGame_Carousel : MonoBehaviour
     {
         
     }
+
+    public void StartGame()
+    {
+
+    }
+
+
 }
