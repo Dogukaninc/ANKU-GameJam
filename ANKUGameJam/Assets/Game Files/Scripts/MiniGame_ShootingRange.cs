@@ -6,9 +6,10 @@ using UnityEngine;
 
 public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
 {
-    public Texture2D crossHair;
     public bool isInteractable;
     public TextMeshProUGUI ammoText;
+
+    public RectTransform weaponParent;
 
     [Header(" Puzzle Settings ")]
     public GameObject miniGamePanel;
@@ -25,11 +26,14 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
     public Action onBallonDestroyed;
     public Action onGunShot;
 
+    public GameObject crossHair_Polygon;
+
     private void OnEnable()
     {
         onBallonDestroyed += Ticker;
         onGunShot += ShootGun;
     }
+
     private void OnDisable()
     {
         onBallonDestroyed -= Ticker;
@@ -45,13 +49,16 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
     {
         if (isGameRunning)
         {
+            crossHair_Polygon.SetActive(true);
+            Cursor.visible = false;
+
+            MouseClick();
+            GunController();
+
             ShootingRange();
         }
 
-        MouseClick();
-
         ammoText.text = currentAmmoCount.ToString() + "/" + maxAmmoCount.ToString();
-
     }
 
     //Mouse týklamasýyla balnolarý vurduðumuz bir mini oyun=>
@@ -62,25 +69,18 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
         balloonIndex++;
     }
 
-    public void ShootGun()
+    public void ShootGun()//Ballon'dan da invoke'luyorum
     {
         currentAmmoCount--;
+        Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
     }
 
     public void MouseClick()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && currentAmmoCount > 0)//her ateþ ettiðimizde boþa da sýksak mermi harcasýn diye yaptým
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hitInfo;
-            Debug.Log("Mouse vurduuaaaaaa");
-
-            if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
-            {
-                Debug.Log("Mouse vurduu");
-                GameObject.CreatePrimitive(PrimitiveType.Cube).transform.position = hitInfo.point;
-                Debug.Log(hitInfo.collider.name);
-            }
+            ShootGun();
         }
     }
 
@@ -95,21 +95,18 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
         }
     }
 
-    public void ChangeCursor()
-    {
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.SetCursor(crossHair, Vector2.zero, CursorMode.ForceSoftware);//Cursor'u custom set etmeye calistik
-        Cursor.visible = true;
-    }
-
     public void CloseShootingRange()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         miniGamePanel.SetActive(false);
         isInteractable = false;
-        Cursor.SetCursor(default, Vector2.zero, CursorMode.ForceSoftware);//Cursor'u custom set etmeye calistik
+        crossHair_Polygon.SetActive(false);
         GameStateHandler.instance.ContinueGame();
+    }
+
+    public void GunController()
+    {
+        weaponParent.position = new Vector2(Mathf.Clamp(weaponParent.position.x, -890, 670), Mathf.Clamp(weaponParent.position.y, 352 , -140 ));
+        weaponParent.position = Input.mousePosition;
     }
 
     public void Interaction()
@@ -122,7 +119,6 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
             GameStateHandler.instance.PauseGame();
 
             isGameRunning = true;
-            ChangeCursor();
         }
         else
         {
@@ -130,15 +126,5 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
         }
 
     }
-
-    /*
-    var rayHit = Physics2D.GetRayIntersection(cam.ScreenPointToRay(Input.mousePosition));
-    if (!rayHit.collider)
-    {
-        return;
-    }
-
-    Debug.Log(rayHit.collider.name);
-    */
 
 }

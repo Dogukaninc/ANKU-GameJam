@@ -75,21 +75,16 @@ public class PlayerController : MonoBehaviour
         Collider2D[] interactableColliders = Physics2D.OverlapCircleAll(interactablePivot.position, interactionRadius, interactables);
         if (interactableColliders.Length > 0)
         {
-            Debug.Log("Etkileþim objesi var");
-
             if (interactableColliders[0].TryGetComponent<IInteractable>(out IInteractable interactable))
             {
                 GameStateHandler.instance.SetInteractionInfo(interactableColliders[0].transform.position + new Vector3(0, 1f, 0));
-                
                 //TODO Eger oyun isInteractable degilse etkileþim paneli açýlmasýn
-                
                 if (Input.GetKeyDown(KeyCode.E))
                 {
                     Debug.Log("Etkileþime girdim");
                     interactable.Interaction();
                 }
             }
-
         }
         else
         {
