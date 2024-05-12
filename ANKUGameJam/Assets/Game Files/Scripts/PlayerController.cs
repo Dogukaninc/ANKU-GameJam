@@ -27,11 +27,13 @@ public class PlayerController : MonoBehaviour
     {
         horizontal = Input.GetAxis("Horizontal");
 
+        /*
         if (IsGrounded())
         {
             //Can jump
             Jump();
         }
+        */
 
         //Check for interactables, if there is any interact with it with key 'E'
         InteractableChecker();
@@ -57,6 +59,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /*
     private void Jump()
     {
         if (Input.GetKeyDown(KeyCode.W))
@@ -64,6 +67,7 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(Vector3.up * jumpMultiplier, ForceMode2D.Impulse);
         }
     }
+    */
 
     public bool IsGrounded()
     {
@@ -77,7 +81,7 @@ public class PlayerController : MonoBehaviour
         {
             if (interactableColliders[0].TryGetComponent<IInteractable>(out IInteractable interactable))
             {
-                GameStateHandler.instance.SetInteractionInfo(interactableColliders[0].transform.position + new Vector3(0, 1f, 0));
+                GameStateHandler.instance.SetInteractionInfo(interactableColliders[0].transform.GetChild(0).position);//Her tezgahýn ilk çocuðunu pivot olarak sectim
                 //TODO Eger oyun isInteractable degilse etkileþim paneli açýlmasýn
                 if (Input.GetKeyDown(KeyCode.E))
                 {

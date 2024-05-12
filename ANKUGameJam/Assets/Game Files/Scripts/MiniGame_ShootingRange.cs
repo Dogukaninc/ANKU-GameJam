@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
 {
@@ -10,6 +11,7 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
     public TextMeshProUGUI ammoText;
 
     public RectTransform weaponParent;
+    public RectTransform canvasRect;
 
     [Header(" Puzzle Settings ")]
     public GameObject miniGamePanel;
@@ -50,19 +52,24 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
         if (isGameRunning)
         {
             crossHair_Polygon.SetActive(true);
-            Cursor.visible = false;
-
-            MouseClick();
             GunController();
+            MouseClick();
+            CheckAllBallons();
 
-            ShootingRange();
+            if (currentAmmoCount == 0)
+            {
+                if (ballonList.Count > 0)
+                {
+                    Debug.Log("Balon kaldý ve mermi bitti");
+                    GameStateHandler.instance.GameOver();
+                }
+            }
+
         }
 
         ammoText.text = currentAmmoCount.ToString() + "/" + maxAmmoCount.ToString();
     }
 
-    //Mouse týklamasýyla balnolarý vurduðumuz bir mini oyun=>
-    //Devreye girince mouse ortaya çýkar ve ýmage alanýnýn dýþýna çýkaramayýz
     public void Ticker()
     {
         tickList[balloonIndex].SetActive(true);
@@ -71,27 +78,26 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
 
     public void ShootGun()//Ballon'dan da invoke'luyorum
     {
+        Debug.Log("Sýktým");
         currentAmmoCount--;
-        Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
     }
 
     public void MouseClick()
     {
         if (Input.GetMouseButtonDown(0) && currentAmmoCount > 0)//her ateþ ettiðimizde boþa da sýksak mermi harcasýn diye yaptým
         {
+            if (EventSystem.current.IsPointerOverGameObject()) { return; }
             ShootGun();
         }
     }
 
-    public void ShootingRange()
+    public void CheckAllBallons()
     {
-        if (ballonList.All(go => go == null))
+        if (ballonList.All(go => go == null) && currentAmmoCount >= 0)
         {
             Debug.Log("Tüm balonlar patlatýldý");
             CloseShootingRange();
             isGameRunning = false;
-            //Oyun bitme aniamsyonu ve durumu
         }
     }
 
@@ -105,19 +111,30 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
 
     public void GunController()
     {
-        weaponParent.position = new Vector2(Mathf.Clamp(weaponParent.position.x, -890, 670), Mathf.Clamp(weaponParent.position.y, 352 , -140 ));
-        weaponParent.position = Input.mousePosition;
+        Vector2 mousePosition = Input.mousePosition;
+        Vector2 canvasMouseLocalPosition;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, mousePosition, null, out canvasMouseLocalPosition);
+        //Debug.Log("MOUSE'nin konumu:" + canvasMouseLocalPosition);
+
+        /*
+        float minX = -600, maxX = 700, minY = -300, maxY = 350;
+
+        Vector2 anchoredWeaponPos = weaponParent.anchoredPosition;
+        anchoredWeaponPos.x = Mathf.Clamp(anchoredWeaponPos.x, minX, maxX);
+        anchoredWeaponPos.y = Mathf.Clamp(anchoredWeaponPos.y, minY, maxY);
+        */
+        weaponParent.anchoredPosition = canvasMouseLocalPosition;
+        //canvasMouseLocalPosition = anchoredWeaponPos;
+        //TODO Clamp ile silahýn pozisyonunu kýsýtla
+
     }
 
     public void Interaction()
     {
-
         if (isInteractable)
         {
             miniGamePanel.SetActive(true);
-            Debug.Log("Puzzle Etkileþime Girildi!!!");
             GameStateHandler.instance.PauseGame();
-
             isGameRunning = true;
         }
         else
