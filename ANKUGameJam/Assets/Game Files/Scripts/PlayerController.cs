@@ -35,6 +35,27 @@ public class PlayerController : MonoBehaviour
         }
         */
 
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            AudioManager.instance.Play("Walking");
+        }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            AudioManager.instance.Play("Walking");
+        }
+
+        if (Input.GetKeyUp(KeyCode.D))
+        {
+            AudioManager.instance.Stop("Walking");
+        }
+        else if (Input.GetKeyUp(KeyCode.A))
+        {
+            AudioManager.instance.Stop("Walking");
+        }
+
+
+
+
         //Check for interactables, if there is any interact with it with key 'E'
         InteractableChecker();
         CharacterAnimations();
@@ -43,7 +64,6 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         rb.velocity = new Vector2(horizontal * movementSpeed * Time.deltaTime, rb.velocity.y);
-
         Rotation();
     }
 
@@ -82,6 +102,8 @@ public class PlayerController : MonoBehaviour
             if (interactableColliders[0].TryGetComponent<IInteractable>(out IInteractable interactable))
             {
                 GameStateHandler.instance.SetInteractionInfo(interactableColliders[0].transform.GetChild(0).position);//Her tezgahýn ilk çocuðunu pivot olarak sectim
+                GameStateHandler.instance.SetTutorialInfoText(interactableColliders[0].GetComponent<TutorialText>().tutorialText);
+
                 //TODO Eger oyun isInteractable degilse etkileþim paneli açýlmasýn
                 if (Input.GetKeyDown(KeyCode.E))
                 {
@@ -95,6 +117,7 @@ public class PlayerController : MonoBehaviour
             GameStateHandler.instance.interactionInfo.SetActive(false);
         }
     }
+
     private void CharacterAnimations()
     {
         if (rb.velocity.x > 0 || rb.velocity.x < 0)
@@ -106,6 +129,15 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isWalking", false);
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Gate"))
+        {
+            SceneController.instance.LoadNextLevel();
+        }
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;

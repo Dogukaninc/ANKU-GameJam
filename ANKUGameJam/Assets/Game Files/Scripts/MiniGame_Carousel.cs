@@ -9,6 +9,10 @@ public class MiniGame_Carousel : MonoBehaviour, IInteractable
     public List<GameObject> tickList;
 
     public int starIndex = 0;
+
+    public bool isChallangeCompleted;
+    public bool canCollectRose;
+
     private void Start()
     {
         isInteractable = true;
@@ -23,6 +27,18 @@ public class MiniGame_Carousel : MonoBehaviour, IInteractable
                 CloseCarousel();
             }
         }
+
+        if (canCollectRose)
+        {
+            TakeRose();
+            canCollectRose = false;
+        }
+    }
+
+    private void TakeRose()
+    {
+        UiManager.instance.onPrizePanelOpen?.Invoke();
+        isChallangeCompleted = true;
     }
 
     public void Ticker()
@@ -35,7 +51,9 @@ public class MiniGame_Carousel : MonoBehaviour, IInteractable
     {
         carouselPanel.SetActive(false);
         isInteractable = false;
+        canCollectRose = true;
         GameStateHandler.instance.ContinueGame();
+        isGameRunning = false;
     }
 
     public void Interaction()

@@ -7,6 +7,7 @@ TagManager:
   - Balloon
   - MovingPlatform
   - Coin
+  - Gate
   layers:
   - Default
   - TransparentFX

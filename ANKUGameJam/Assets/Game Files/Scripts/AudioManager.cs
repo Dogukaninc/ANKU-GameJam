@@ -5,9 +5,11 @@ using System;
 public class AudioManager : MonoBehaviour
 {
 
+    public string sceneTheme;
     void Start()
     {
         /* Play("") þeklinde istediðimiz giriþ müziði */
+        Play(sceneTheme);
     }
 
     public Sound[] sounds;
@@ -26,7 +28,7 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
 
         foreach (Sound s in sounds)
         {
@@ -43,6 +45,12 @@ public class AudioManager : MonoBehaviour
     {
         Sound s = Array.Find(sounds, sound => sound.name == name);
         s.source.Play();
+    }
+
+    public void Stop(string name)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        s.source.Stop();
     }
 }
 

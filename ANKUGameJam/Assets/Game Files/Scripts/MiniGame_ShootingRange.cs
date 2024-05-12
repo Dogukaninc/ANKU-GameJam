@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,11 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
     public Action onGunShot;
 
     public GameObject crossHair_Polygon;
+
+    public bool isChallangeCompleted;
+    public bool canCollectRose;
+
+
 
     private void OnEnable()
     {
@@ -64,10 +70,24 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
                     GameStateHandler.instance.GameOver();
                 }
             }
+        }
 
+        if (canCollectRose)
+        {
+            TakeRose();
+            canCollectRose = false;
         }
 
         ammoText.text = currentAmmoCount.ToString() + "/" + maxAmmoCount.ToString();
+    }
+
+
+    private void TakeRose()
+    {
+        //Yeterli miktarda collectable alýnca ödül paneli açýlacak animasyonla
+        //Panel açýlýnca altýnda 2x yazan bir gül buketi çýkacak
+        UiManager.instance.onPrizePanelOpen?.Invoke();
+        isChallangeCompleted = true;
     }
 
     public void Ticker()
@@ -96,6 +116,7 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
         if (ballonList.All(go => go == null) && currentAmmoCount >= 0)
         {
             Debug.Log("Tüm balonlar patlatýldý");
+
             CloseShootingRange();
             isGameRunning = false;
         }
@@ -106,6 +127,7 @@ public class MiniGame_ShootingRange : MonoBehaviour, IInteractable
         miniGamePanel.SetActive(false);
         isInteractable = false;
         crossHair_Polygon.SetActive(false);
+        canCollectRose = true;
         GameStateHandler.instance.ContinueGame();
     }
 

@@ -5,8 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class GameStateHandler : MonoBehaviour
 {
+    public MiniGame_Carousel miniGame_Carousel;
+    public MiniGame_ShootingRange shootingRange;
+    public ColorChangeEffect colorChangeEffect;
+
     public PlayerController playerController;
     public GameObject interactionInfo;
+    public TextMeshProUGUI tutorialInfo;
 
     public TextMeshProUGUI gameOverText;
     public GameObject gameOverPanel;
@@ -31,6 +36,10 @@ public class GameStateHandler : MonoBehaviour
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
     }
+    private void Update()
+    {
+        DoesBothRorsesEarned();
+    }
 
     public void PauseGame()
     {
@@ -49,6 +58,10 @@ public class GameStateHandler : MonoBehaviour
         interactionInfo.SetActive(true);
         interactionInfo.transform.position = targetPos;
     }
+    public void SetTutorialInfoText(string text)
+    {
+        tutorialInfo.text = text;
+    }
 
     public void GameOver()
     {
@@ -63,6 +76,15 @@ public class GameStateHandler : MonoBehaviour
     {
         gameOverPanel.SetActive(false);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void DoesBothRorsesEarned()
+    {
+        if (miniGame_Carousel.isChallangeCompleted && shootingRange.isChallangeCompleted)
+        {
+            colorChangeEffect.isMissionCompleted = true;
+        }
+
     }
 
     IEnumerator RestartAppearDelay()

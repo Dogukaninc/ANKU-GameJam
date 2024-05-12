@@ -15,6 +15,7 @@ public class Ballon : MonoBehaviour
             miniGame_ShootingRange.onBallonDestroyed?.Invoke();
 
             Debug.Log("Balonu vurdum");
+            AudioManager.instance.Play("Ballon");
             miniGame_ShootingRange.ballonList.Remove(this.gameObject);
             Destroy(gameObject);
         }
