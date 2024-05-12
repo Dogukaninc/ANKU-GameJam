@@ -1,0 +1,45 @@
+.header {
+    -unity-font: url("project://database/Assets/Fonts/JazzCreateBubble.ttf?fileID=12800000&guid=58b647c5b2ec4184e9a07a561cdf0644&type=3#JazzCreateBubble");
+    -unity-font-definition: ınitial;
+    -unity-background-image-tint-color: rgb(56, 56, 56);
+}
+
+.button {
+    color: rgb(255, 255, 255);
+    font-size: 50px;
+    -unity-font: url("project://database/Assets/Fonts/JazzCreateBubble.ttf?fileID=12800000&guid=58b647c5b2ec4184e9a07a561cdf0644&type=3#JazzCreateBubble");
+    -unity-font-definition: ınitial;
+    -unity-text-outline-color: rgba(0, 0, 0, 0);
+    border-left-color: rgba(162, 162, 162, 0);
+    border-right-color: rgba(162, 162, 162, 0);
+    border-top-color: rgba(162, 162, 162, 0);
+    border-bottom-color: rgba(162, 162, 162, 0);
+    transition-duration: 0.35s;
+}
+
+.button:hover {
+    -unity-text-outline-width: 0;
+    text-shadow: 10px 10px 1px rgb(237, 85, 138);
+    transition-duration: 1s;
+    scale: 1.2 1.2;
+    -unity-text-outline-color: rgb(0, 0, 0);
+}
+
+.header:hover {
+    scale: 1.1 1.1;
+    rotate: 0;
+    text-shadow: 10px 10px 0 rgb(237, 85, 138);
+}
+
+.baslik {
+    -unity-font-definition: ınitial;
+    -unity-font: url("project://database/Assets/Fonts/Future%20TimeSplitters.otf?fileID=12800000&guid=329bb45a286c440409fa7ea2d9d3ab49&type=3#Future TimeSplitters");
+    transition-duration: 0.35s;
+    transition-delay: 0.1s;
+    text-shadow: 10px 5px 0 rgb(255, 255, 255);
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: rgb(0, 0, 0);
+}
+
+.baslik:hover {
+}
