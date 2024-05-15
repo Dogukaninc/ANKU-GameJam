@@ -8,7 +8,7 @@ public class AudioManager : MonoBehaviour
     public string sceneTheme;
     void Start()
     {
-        /* Play("") şeklinde istediğimiz giriş müziği */
+        /* Play("") ÅŸeklinde istediÄŸimiz giriÅŸ mÃ¼ziÄŸi */
         Play(sceneTheme);
     }
 
